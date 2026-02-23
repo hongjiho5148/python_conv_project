@@ -8,7 +8,7 @@ from datetime import datetime
 def scrape_gs25_event_goods():
     print("GS25 행사 상품 수집을 시작합니다...")
     
-    # 오늘 날짜 구하기 (파일명 생성용: 예 - 260223)
+    # 오늘 날짜 구하기 
     now = datetime.now()
     file_date_str = now.strftime("%y%m%d")
     
@@ -104,7 +104,7 @@ def scrape_gs25_event_goods():
     if gs25_data_list:
         df = pd.DataFrame(gs25_data_list)
         
-        # 요청하신 파일명 형식: 편의점명_날짜.csv (예: GS25_260223.csv)
+        # 파일명 형식
         csv_filename = f'GS25_{file_date_str}.csv'
         
         # 한글 깨짐 방지를 위해 utf-8-sig 인코딩 사용, index 제외
