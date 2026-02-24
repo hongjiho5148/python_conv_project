@@ -15,6 +15,11 @@ conv-dashboard/
 ┣━━ 📄 README.md               # 프로젝트 개요 및 사용 가이드
 ┣━━ 📄 app.py                  # [Main] 통합 실행 및 대시보드 엔진
 ┃
+┣━━ 📂 pages/                # [페이지]
+┃   ┣━━ 📄 01_Price_Analysis.py  # 가격 비교 분석 페이지
+┃   ┣━━ 📄 02_Brand_Comparison.py # 브랜드별 특징 분석
+┃   ┗━━ 📄 03_Category_Trends.py  # 카테고리별 트렌드
+┃
 ┣━━ 📂 scraper/                # [수집] 브랜드별 크롤러 패키지
 ┃   ┣━━ 📄 __init__.py         # 패키지 초기화 파일
 ┃   ┣━━ 📄 cu_scraper.py       # CU 데이터 수집 로직
