@@ -1,8 +1,22 @@
 import streamlit as st
 import os
 import pandas as pd
+from datetime import datetime
+
+from batch.batch_scheduler_manager import get_scheduler_manager
 
 st.set_page_config(page_title="편의점 행사 대시보드", page_icon="🏪", layout="wide")
+scheduler = get_scheduler_manager()
+scheduler.add_job(
+    day=1,
+    hour=0,
+    minute=30,
+    year=None,
+    month=None,
+    batch_name="정기 월간 데이터 최신화 배치",
+    job_id="run_monthly_batch_task",
+    dry_run=False
+)
 
 # 세션 메모리 초기화
 if 'recent_keywords' not in st.session_state:
