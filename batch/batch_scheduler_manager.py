@@ -80,7 +80,7 @@ class SchedulerManager:
         )
         self.job_configs = {}  # job_id별 설정 저장
 
-    def add_job(self, day: int, hour: int, minute: int, year: int, month: int,
+    def add_job(self, day: int, hour: int, minute: int,year: int = None, month: int = None,
                 batch_name: str = None, job_id: str = None, dry_run: bool = False):
         """
         새로운 배치 작업을 등록 부(커스텀 해서 사용가능)
@@ -89,14 +89,15 @@ class SchedulerManager:
             day: 실행 날짜 (1-31, * 사용 가능)
             hour: 실행 시간 (0-23)
             minute: 실행 분 (0-59)
-            year: 크롤링 대상 연도
-            month: 크롤링 대상 월 (1-12)
             batch_name: 배치 이름 (기본값: "연도월")
             job_id: job 식별자 (기본값: "batch_{year}_{month}_{day}_{hour}_{minute}")
             dry_run: True이면 크롤링 건너뜀
         """
-        batch_name = batch_name or f"{year}년 {month}월"
-        job_id = job_id or f"batch_{year}_{month}_{day}_{hour}_{minute}"
+        now = datetime.now()
+        target_year = year or now.year
+        target_month = month or now.month
+        batch_name = batch_name or f"{target_year}년 {target_month}월"
+        job_id = job_id or f"batch_{target_year}_{target_month}_{day}_{hour}_{minute}"
 
         # 기존 job이 있으면 제거
         if self.scheduler.get_job(job_id):
