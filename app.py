@@ -1,9 +1,13 @@
-
 import streamlit as st
 import os
 import pandas as pd
 
 st.set_page_config(page_title="편의점 행사 대시보드", page_icon="🏪", layout="wide")
+
+# 세션 메모리 초기화
+if 'recent_keywords' not in st.session_state:
+    st.session_state['recent_keywords'] = []
+
 
 # CSS 로드 (모든 페이지 공통)
 if os.path.exists("style.css"):
@@ -38,12 +42,14 @@ home_page = st.Page("pages/00_home.py", title="🏠 메인보드", default=True)
 summary_page = st.Page("pages/01_overall_summary.py", title="🔍 전체 요약")
 comparison_page = st.Page("pages/02_brand_comparison.py", title="📊 브랜드 비교")
 best_value_page = st.Page("pages/03_best_value.py", title="💎 가성비 TOP 50")
-budget_page = st.Page("pages/04_Budget_Combination.py", title="🍱내 예산 맞춤 식사 조합")
+budget_combination_page = st.Page("pages/04_budget_combination.py", title="🍱 예산 맞춤 꿀조합")
+diet_guide_page = st.Page("pages/05_diet_guide.py", title="🏋️ 다이어트 & 식단 가이드")
+night_snack_page = st.Page("pages/06_night_snack_guide.py", title="🌙 야식 & 안주 가이드")
 
 # 내비게이션 구성
 pg = st.navigation({
     "대시보드": [home_page],
-    "상세 서비스": [summary_page, comparison_page, best_value_page, budget_page]
+    "상세 서비스": [summary_page, comparison_page, best_value_page, budget_combination_page, diet_guide_page, night_snack_page]
 })
 
 # 사이드바 실행
