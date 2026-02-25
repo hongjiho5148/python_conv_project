@@ -117,9 +117,9 @@ except Exception as e:
 
 # 3. 퀵 메뉴 카드
 st.markdown("### 🚀 빠른 메뉴")
-c1, c2, c3 = st.columns(3)
+r1_c1, r1_c2, r1_c3 = st.columns(3)
 
-with c1:
+with r1_c1:
     st.markdown("""
         <a href="/overall_summary" target="_self" style="text-decoration:none; color:inherit;">
             <div class="dashboard-card" style="cursor:pointer;">
@@ -131,7 +131,7 @@ with c1:
         </a>
     """, unsafe_allow_html=True)
 
-with c2:
+with r1_c2:
     st.markdown("""
         <a href="/brand_comparison" target="_self" style="text-decoration:none; color:inherit;">
             <div class="dashboard-card" style="cursor:pointer;">
@@ -143,7 +143,7 @@ with c2:
         </a>
     """, unsafe_allow_html=True)
 
-with c3:
+with r1_c3:
     st.markdown("""
         <a href="/best_value" target="_self" style="text-decoration:none; color:inherit;">
             <div class="dashboard-card" style="cursor:pointer;">
@@ -156,6 +156,45 @@ with c3:
     """, unsafe_allow_html=True)
 
 # 4. 하단 브랜드 로고 섹션
+r2_c1, r2_c2, r2_c3 = st.columns(3)
+
+with r2_c1:
+    st.markdown("""
+        <a href="/budget_combination" target="_self" style="text-decoration:none; color:inherit;">
+            <div class="dashboard-card" style="cursor:pointer;">
+                <div class="card-icon">🍱</div>
+                <div class="card-title">예산 맞춤 꿀조합</div>
+                <div class="card-desc">내 예산 안에서 가장 많이 절약할 수 있는 상품들의 조합을 추천해드려요.</div>
+                <div style="margin-top:20px; color:#58a6ff; font-weight:bold;">이동하기 →</div>
+            </div>
+        </a>
+    """, unsafe_allow_html=True)
+
+with r2_c2:
+    st.markdown("""
+        <a href="/diet_guide" target="_self" style="text-decoration:none; color:inherit;">
+            <div class="dashboard-card" style="cursor:pointer;">
+                <div class="card-icon">🏋️</div>
+                <div class="card-title">다이어트 가이드</div>
+                <div class="card-desc">제로 슈거, 고단백 상품들만 쏙쏙 골라 건강한 편의점 식단을 제안합니다.</div>
+                <div style="margin-top:20px; color:#58a6ff; font-weight:bold;">이동하기 →</div>
+            </div>
+        </a>
+    """, unsafe_allow_html=True)
+
+with r2_c3:
+    st.markdown("""
+        <a href="/night_snack_guide" target="_self" style="text-decoration:none; color:inherit;">
+            <div class="dashboard-card" style="cursor:pointer;">
+                <div class="card-icon">🌙</div>
+                <div class="card-title">야식 & 안주 가이드</div>
+                <div class="card-desc">오늘 밤 혼술 안주와 야식을 고민하시나요? 딱 맞는 행사 안주를 찾아보세요.</div>
+                <div style="margin-top:20px; color:#58a6ff; font-weight:bold;">이동하기 →</div>
+            </div>
+        </a>
+    """, unsafe_allow_html=True)
+
+# 3. 하단 브랜드 로고 섹션
 st.markdown("---")
 st.markdown("### 🏢 함께하는 브랜드")
 l1, l2, l3, l4 = st.columns(4)

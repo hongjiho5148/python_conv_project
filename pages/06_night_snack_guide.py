@@ -4,32 +4,26 @@ import os
 from datetime import datetime
 
 # 1. 페이지 설정
-st.set_page_config(page_title="다이어트 & 식단 가이드", page_icon="🏋️", layout="wide")
+st.set_page_config(page_title="야식 & 안주 가이드", page_icon="🌙", layout="wide")
 
 # 2. 공통 CSS 로드
 if os.path.exists("style.css"):
     with open("style.css", encoding="utf-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# 3. 스크롤 트리거
+# 3. 스크롤 트리거 (05_diet_guide.py와 동일한 유틸리티)
 def trigger_scroll():
-    st.session_state.do_scroll = True
+    st.session_state.snack_do_scroll = True
 
-# 4. 스크롤 실행
-#    - 100ms 간격으로 2초 동안 반복 실행
-#    - Streamlit이 렌더링을 늦게 완료해도 확실히 잡힘
 def execute_scroll():
     st.components.v1.html(
         """
         <script>
         var scrollCount = 0;
-        var maxTries = 20; // 100ms * 20 = 2초간 반복
-
+        var maxTries = 20; 
         function resetScroll() {
             scrollCount++;
             var doc = window.parent.document;
-
-            // 실제로 scrollTop > 0 인 요소를 찾아 리셋
             var allElements = doc.querySelectorAll('*');
             for (var i = 0; i < allElements.length; i++) {
                 if (allElements[i].scrollTop > 0) {
@@ -39,14 +33,10 @@ def execute_scroll():
             window.parent.scrollTo(0, 0);
             doc.documentElement.scrollTop = 0;
             doc.body.scrollTop = 0;
-
-            // maxTries 횟수 안에서 계속 반복
             if (scrollCount < maxTries) {
                 setTimeout(resetScroll, 100);
             }
         }
-
-        // 즉시 시작
         resetScroll();
         </script>
         """,
@@ -76,42 +66,43 @@ def get_data():
 
 df = get_data()
 
-# 5. 타이틀
-st.title(f"🏋️ {datetime.now().strftime('%Y년 %m월')} 다이어트 & 식단 가이드")
+# 4. 타이틀 및 헤더
+st.title(f"🌙 {datetime.now().strftime('%Y년 %m월')} 야식 & 안주 가이드")
+st.markdown("##### 오늘 밤, 당신의 소중한 혼술과 야식을 책임질 최고의 행사 상품 큐레이션!")
 
 if not df.empty:
-    # 6. 상세 필터
-    with st.expander("🔍 상세 필터 및 테마 선택", expanded=True):
-        # 첫 번째 줄: 검색, 식단 테마, 정렬
+    # 5. 상세 필터 및 테마 선택
+    with st.expander("🔍 야식 테마 및 상세 필터", expanded=True):
         r1_c1, r1_c2, r1_c3 = st.columns([2, 1, 1])
         
         with r1_c1:
-            search_query = st.text_input("📝 검색", "", placeholder="상품명 입력")
+            search_query = st.text_input("📝 상품 검색", "", placeholder="예: 닭발, 감자칩, 소시지")
         with r1_c2:
-            tags = {
-                "🥤 제로 & 저당": ["제로", "zero", "무가당", "슈가프리", "0칼로리"],
-                "🍗 고단백 식단": ["단백질", "프로틴", "닭가슴살", "계란", "단백", "닭가슴"]
+            snack_themes = {
+                "🍺 맥주와 찰떡궁합": ["치킨", "너겟", "소시지", "핫바", "만두", "피자", "감자", "나쵸", "과자", "팝콘", "땅콩", "아몬드", "어포"],
+                "🔥 소주 & 매콤안주": ["닭발", "곱창", "막창", "족발", "편육", "육포", "오징어", "황태", "어묵탕", "부대찌개", "매콤", "불닭"],
+                "🍜 든든한 야식": ["떡볶이", "라면", "컵라면", "짜장", "짬뽕", "우동", "도시락", "김밥", "삼각김밥", "햄버거"]
             }
-            selected_tag = st.selectbox("🎯 식단 테마", list(tags.keys()))
-            keywords = tags[selected_tag]
+            selected_theme = st.selectbox("🎯 야식 테마 선택", list(snack_themes.keys()))
+            keywords = snack_themes[selected_theme]
         with r1_c3:
-            sort_option = st.selectbox("💰 정렬", ["기본", "가격 낮은 순", "가격 높은 순"])
+            sort_option = st.selectbox("💰 정렬 방식", ["할인율 순", "가격 낮은 순", "가격 높은 순"])
 
-        # 두 번째 줄: 브랜드, 행사, 분류
         r2_c1, r2_c2, r2_c3 = st.columns([1, 1, 1])
         with r2_c1:
             brand_list = sorted(df['brand'].unique().tolist())
-            selected_brands = st.multiselect("🏪 브랜드", brand_list, default=brand_list)
+            selected_brands = st.multiselect("🏪 편의점", brand_list, default=brand_list)
         with r2_c2:
             event_list = sorted([e for e in df['event'].unique().tolist() if e not in ['SALE', '세일']])
-            selected_events = st.multiselect("🎁 행사", event_list, default=event_list)
+            selected_events = st.multiselect("🎁 행사 유형", event_list, default=event_list)
         with r2_c3:
             cat_list = sorted(df['category'].unique().tolist())
-            selected_cats = st.multiselect("📂 분류", cat_list, default=cat_list)
+            selected_cats = st.multiselect("📂 상품 카테고리", cat_list, default=cat_list)
 
-    # 7. 필터링
+    # 6. 필터링 로직
     pattern = "|".join(keywords)
-    exclude_pattern = "|".join(["맥주", "라이트비어", "피죤", "필라이트", "카스라이트", "주류", "스팸", "베이컨", "부대찌개", "햄", "가그린", "구강", "리스테린", "순수한면", "대형", "무알콜", "제로백젤리"])
+    # 야식과 거리가 먼 생활용품 등 제외 패턴
+    exclude_pattern = "|".join(["피죤", "가그린", "칫솔", "치약", "샴푸", "린스", "면도기", "생리대", "마스크", "세제", "멀티비타민"])
 
     filtered_df = df[
         (df['name'].str.contains(pattern, case=False, na=False)) &
@@ -120,49 +111,46 @@ if not df.empty:
         (df['event'].isin(selected_events)) &
         (df['category'].isin(selected_cats)) &
         (df['name'].str.contains(search_query, case=False))
-    ]
+    ].copy()
 
+    # 정렬
     if sort_option == "가격 낮은 순":
         filtered_df = filtered_df.sort_values(by='unit_price')
     elif sort_option == "가격 높은 순":
         filtered_df = filtered_df.sort_values(by='unit_price', ascending=False)
-    else:
+    else: # 할인율 순
         filtered_df = filtered_df.sort_values(by='discount_rate', ascending=False)
 
-    # 8. 페이지네이션
+    # 7. 페이지네이션
     items_per_page = 30
-    total_pages = max(
-        (len(filtered_df) // items_per_page) + (1 if len(filtered_df) % items_per_page > 0 else 0),
-        1
-    )
+    total_pages = max((len(filtered_df) // items_per_page) + (1 if len(filtered_df) % items_per_page > 0 else 0), 1)
 
-    if 'diet_page' not in st.session_state:
-        st.session_state.diet_page = 1
+    if 'snack_page' not in st.session_state:
+        st.session_state.snack_page = 1
 
-    query_hash = selected_tag + str(selected_brands) + str(selected_events) + str(selected_cats) + search_query + sort_option
-    if 'diet_query_hash' not in st.session_state or st.session_state.diet_query_hash != query_hash:
-        st.session_state.diet_page = 1
-        st.session_state.diet_query_hash = query_hash
+    query_hash = selected_theme + str(selected_brands) + str(selected_events) + str(selected_cats) + search_query + sort_option
+    if 'snack_query_hash' not in st.session_state or st.session_state.snack_query_hash != query_hash:
+        st.session_state.snack_page = 1
+        st.session_state.snack_query_hash = query_hash
 
-    start_idx = (st.session_state.diet_page - 1) * items_per_page
+    start_idx = (st.session_state.snack_page - 1) * items_per_page
     display_df = filtered_df.iloc[start_idx: start_idx + items_per_page]
 
-    # 9. 상품 리스트
+    # 8. 결과 출력
     if not display_df.empty:
-        st.info(f"✨ **{selected_tag}** 테마 상품 {len(filtered_df)}건 검색")
+        st.success(f"🍻 **{selected_theme}** 테마에 어울리는 상품 {len(filtered_df)}개를 찾았습니다!")
 
-        # ✅ 스크롤 실행 (100ms 간격 2초 반복)
-        if st.session_state.get("do_scroll", False):
+        if st.session_state.get("snack_do_scroll", False):
             execute_scroll()
-            st.session_state.do_scroll = False
+            st.session_state.snack_do_scroll = False
 
         cols = st.columns(5)
         for idx, (_, row) in enumerate(display_df.iterrows()):
             with cols[idx % 5]:
                 st.markdown(f"""
                     <div class="product-card">
-                        <div style="width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: white; border-radius: 10px; margin-bottom: 10px;">
-                            <img src="{row['img_url']}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        <div class="img-container">
+                            <img src="{row['img_url'] if pd.notna(row['img_url']) else ''}">
                         </div>
                         <div class="product-name" style="height: 45px; overflow: hidden;">{row['name']}</div>
                         <div style="margin-top: 8px;">
@@ -174,29 +162,28 @@ if not df.empty:
                     </div>
                 """, unsafe_allow_html=True)
 
-        # 10. 하단 내비게이션
+        # 9. 하단 페이지네이션 컨트롤
         st.markdown("---")
         _, b1, p_box, b2, _ = st.columns([4, 0.3, 1, 0.3, 4])
 
         with b1:
-            if st.button("❮", key="d_prev") and st.session_state.diet_page > 1:
-                st.session_state.diet_page -= 1
+            if st.button("❮", key="snack_prev") and st.session_state.snack_page > 1:
+                st.session_state.snack_page -= 1
                 trigger_scroll()
                 st.rerun()
 
         with p_box:
-            st.markdown(
-                f"<div class='page-info-box'>{st.session_state.diet_page} / {total_pages}</div>",
-                unsafe_allow_html=True
-            )
+            st.markdown(f"<div class='page-info-box'>{st.session_state.snack_page} / {total_pages}</div>", unsafe_allow_html=True)
 
         with b2:
-            if st.button("❯", key="d_next") and st.session_state.diet_page < total_pages:
-                st.session_state.diet_page += 1
+            if st.button("❯", key="snack_next") and st.session_state.snack_page < total_pages:
+                st.session_state.snack_page += 1
                 trigger_scroll()
                 st.rerun()
-
     else:
-        st.warning("결과가 없습니다.")
+        st.warning("아쉽게도 해당 테마에 맞는 행사 상품이 현재 없습니다. 다른 테마나 필터를 선택해보세요!")
 else:
-    st.info("데이터 로딩 중...")
+    st.info("데이터를 불러오는 중입니다...")
+
+st.markdown("---")
+st.caption("※ 상품 정보는 각 편의점 공식 홈페이지의 행사 정보를 바탕으로 제공됩니다.")
