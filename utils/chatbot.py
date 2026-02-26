@@ -21,7 +21,15 @@ def load_chatbot_data():
 
 def show_chatbot():
     if 'messages' not in st.session_state:
-        st.session_state.messages = []
+        st.session_state.messages = [
+            {
+                "role": "assistant",
+                "content": "🏪 **편의점 꿀팁봇 사용법**\n\n"
+                           "1. **상품 검색**: 궁금한 상품명을 입력하세요.\n"
+                           "2. **행사 확인**: 1+1, 2+1 등 행사 정보를 묻어보세요.\n"
+                           "3. **카테고리**: '과자', '도시락' 등으로 검색 가능합니다."
+            }
+        ]
 
     # 배경색 문제 해결 및 기존 UI 스타일 유지
     st.markdown("""
