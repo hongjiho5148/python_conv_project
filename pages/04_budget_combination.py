@@ -5,6 +5,19 @@ import os
 import itertools
 import random
 
+# 브랜드별 고유 컬러 반환 함수
+def get_brand_color(brand):
+    brand_colors = {
+        "CU": "#652D90",
+        "GS25": "#0054A6",
+        "7-Eleven": "#008061",
+        "7Eleven": "#008061",
+        "세븐일레븐": "#008061",
+        "emart24": "#FFB81C",
+        "이마트24": "#FFB81C"
+    }
+    return brand_colors.get(brand, "#8b949e")
+
 # ==========================================
 # 1. 상수 정의 (Constants)
 # ==========================================
@@ -194,6 +207,7 @@ if st.button("✨ 최적의 꿀조합 찾기", use_container_width=True):
             if top_combinations:
                 st.subheader("🎉 당신을 위한 최고의 꿀조합!")
                 for idx, combo in enumerate(top_combinations):
+<<<<<<< Updated upstream
                     with st.container(border=True):
                         c1, c2 = st.columns([3, 1])
                         with c1: st.markdown(f"### 🍯 추천 {idx + 1}순위")
@@ -212,5 +226,20 @@ if st.button("✨ 최적의 꿀조합 찾기", use_container_width=True):
                                         <div style="font-size: 0.7rem; background: #3182f6; color: white; border-radius: 4px; display: inline-block; padding: 2px 5px; margin-top: 5px;">{item['event']}</div>
                                     </div>
                                 """, unsafe_allow_html=True)
+=======
+                    with cols[idx]:
+                        with st.container(border=True):
+                            st.markdown(f"#### 🥇 추천 {idx + 1}위")
+                            for item in combo['items']:
+                                img_url = item['img_url'] if pd.notna(item['img_url']) else "https://via.placeholder.com/100"
+                                st.image(img_url, width=100)
+                                brand_color = get_brand_color(item['brand'])
+                                st.markdown(f"**{item['name']}**")
+                                st.markdown(f"<span style='color:{brand_color}; background:{brand_color}15; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.8rem;'>{item['brand']}</span>", unsafe_allow_html=True)
+                                st.markdown(f"_{item['event']}_ | {item['price']:,}원")
+                                st.divider()
+                            st.markdown(f"**합계: {int(combo['total_price']):,}원**")
+                            st.markdown(f"<span style='color:red; font-weight:bold;'>🔥 {int(combo['saved_money']):,}원 절약!</span>", unsafe_allow_html=True)
+>>>>>>> Stashed changes
             else:
                 st.error("😥 조건에 맞는 조합을 찾지 못했어요. 예산을 조정해 보세요!")
