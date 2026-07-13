@@ -1,121 +1,254 @@
-# 🏪 편의점 행사 통합 대시보드 (CVS Event Comparator)
+# 편의점 행사 통합 대시보드
 
-본 프로젝트는 국내 주요 편의점(CU, GS25, 7-Eleven, emart24)의 행사 상품 데이터를 실시간으로 수집, 정제, 시각화하여 사용자에게 최적의 쇼핑 정보를 제공하는 통합 대시보드 시스템입니다.
+CU, GS25, 7-Eleven, emart24의 행사 상품 데이터를 수집하고 정제해 사용자가 가격, 행사 유형, 브랜드, 카테고리 기준으로 비교할 수 있도록 만든 Streamlit 기반 데이터 대시보드입니다.
 
----
+이 프로젝트는 단순한 상품 목록 화면이 아니라, 서로 다른 편의점 사이트의 데이터 구조를 공통 스키마로 통합하고 배치 작업으로 갱신 가능한 분석용 데이터셋을 만드는 데 초점을 두었습니다.
 
-## 📂 전체 프로젝트 구조 (Detailed Project Structure)
+## 목차
+
+- [팀 소개](#팀-소개)
+- [서비스 개요](#서비스-개요)
+- [주요 기능](#주요-기능)
+- [기술 스택](#기술-스택)
+- [프로젝트 구조](#프로젝트-구조)
+- [데이터 파이프라인](#데이터-파이프라인)
+- [실행 방법](#실행-방법)
+- [Git 협업 정보](#git-협업-정보)
+- [트러블슈팅 및 개선점](#트러블슈팅-및-개선점)
+
+## 팀 소개
+
+편의점 행사 데이터를 수집, 정제, 분석, 시각화하는 전 과정을 구현한 팀 프로젝트입니다.  
+아래 GitHub 계정은 현재 저장소의 커밋 기록에서 확인되는 기여자 기준으로 정리했습니다.
+
+| GitHub | 주요 기여 영역 |
+| --- | --- |
+| [hongjiho5148](https://github.com/hongjiho5148) | 프로젝트 저장소 관리, Streamlit 화면 구성, 기능 통합 |
+| [Hyeonseok93](https://github.com/Hyeonseok93) | 주요 기능 개발, 데이터 처리 및 화면 개선 |
+| [Engineer-kim](https://github.com/Engineer-kim) | 기능 개발, 테스트 및 데이터 흐름 개선 |
+| [owhat02](https://github.com/owhat02) | 예산 조합 추천, 비교 기능 개선 |
+| [seoyeon020](https://github.com/seoyeon020) | 기능 보완 및 UI/데이터 처리 기여 |
+| [siyeon04](https://github.com/siyeon04) | 기능 보완 및 프로젝트 개선 기여 |
+
+역할명이나 팀원별 담당 페이지가 더 명확해지면 이 표를 `팀장`, `데이터 수집`, `대시보드`, `추천 기능`, `지도/뉴스`, `QA`처럼 세분화할 수 있습니다.
+
+## 서비스 개요
+
+편의점 행사 정보는 브랜드별로 제공 방식과 페이지 구조가 다릅니다. 이 프로젝트는 각 브랜드별 수집기를 분리해 데이터를 가져온 뒤, `brand`, `name`, `price`, `event`, `img_url`, `category` 형태의 공통 데이터로 정리합니다.
+
+정제된 데이터는 Streamlit 대시보드에서 다음과 같은 방식으로 활용됩니다.
+
+- 전체 행사 상품 검색 및 필터링
+- 브랜드별 행사 규모와 가격 분포 비교
+- 할인 효율이 높은 상품 랭킹
+- 사용자의 예산에 맞는 상품 조합 추천
+- 다이어트, 야식, 랜덤 추천 등 상황별 상품 탐색
+- 전국 편의점 위치 지도
+- 행사/이벤트 관련 뉴스 확인
+- 챗봇 기반 상품 추천 보조
+
+## 주요 기능
+
+| 메뉴 | 설명 |
+| --- | --- |
+| 메인보드 | 추천 상품, 시간대별 상품, 빠른 메뉴, 최신 뉴스 제공 |
+| 전체 요약 | 행사 상품 목록 검색, 브랜드/행사/카테고리 필터링 |
+| 브랜드별 비교 | CU, GS25, 7-Eleven, emart24 행사 규모 및 통계 비교 |
+| 가성비 TOP 50 | 행사 유형을 반영한 개당 가격 기준 상품 랭킹 |
+| 예산 맞춤 조합 | 사용자가 입력한 예산 안에서 구매 가능한 상품 조합 추천 |
+| 다이어트 가이드 | 식사류, 음료 등 카테고리를 활용한 목적별 상품 추천 |
+| 야식 & 안주 가이드 | 야식과 안주에 적합한 행사 상품 탐색 |
+| 편의점 지도 | 브랜드별 전국 편의점 위치 확인 |
+| 랜덤 픽커 | 상품 선택이 어려울 때 랜덤 추천 제공 |
+| 잭팟 게임 | 상품 데이터를 활용한 간단한 슬롯형 게임 |
+| 행사 뉴스 | 편의점 브랜드 행사 및 이벤트 관련 뉴스 제공 |
+
+## 기술 스택
+
+| 영역 | 기술 |
+| --- | --- |
+| 애플리케이션 | Python, Streamlit |
+| 데이터 처리 | Pandas |
+| 크롤링 | Requests, BeautifulSoup4, Selenium, webdriver-manager |
+| 시각화 | Plotly, Folium, streamlit-folium |
+| 배치 | APScheduler, pytz, loguru |
+| AI 보조 | Groq API, python-dotenv |
+| 협업 | Git, GitHub |
+
+## 프로젝트 구조
 
 ```text
-conv-dashboard/
-┣━━ 📂 .devcontainer/                       # 개발 환경 컨테이너화 설정 폴더
-┃   ┗━━ 📄 devcontainer.json                # 클라우드 개발 환경 자동화 명세서
-┣━━ 📂 .streamlit/                          # Streamlit 설정
-┃   ┗━━ 📄 config.toml                      # 테마, 레이아웃 및 서버 구성
-┣━━ 📂 assets/                              # 이미지 및 정적 리소스
-┃   ┣━━ 🖼️ logo_cu.png                      # CU 로고
-┃   ┣━━ 🖼️ logo_gs25.png                    # GS25 로고
-┃   ┣━━ 🖼️ logo_7eleven.png                 # 세븐일레븐 로고
-┃   ┣━━ 🖼️ logo_emart24.png                 # 이마트24 로고
-┃   ┣━━ 🖼️ brandname_visual.png             # 브랜드 통계 시각화 이미지
-┃   ┗━━ 🖼️ graph.png                        # 가격 분석 그래프 이미지
-┣━━ 📂 batch/                               # 정기 데이터 수집 배치 처리
-┃   ┣━━ 📂 script/              
-┃   ┃   ┗━━ 📄 crawl_batch_script.py        # 실제 크롤링 배치 실행 스크립트
-┃   ┣━━ 📄 batch_scheduler_manager.py       # 배치 스케줄 관리 모듈
-┃   ┣━━ 📄 Batach_README.md                 # 배치 시스템 가이드
-┃   ┗━━ 📄 __init__.py
-┣━━ 📂 data/                                # 수집 및 정제된 데이터 (CSV)
-┃   ┣━━ 📄 CU_260224.csv                    # 브랜드별 원본 수집 데이터
-┃   ┣━━ 📄 GS25_260224.csv
-┃   ┣━━ 📄 7Eleven_260224.csv
-┃   ┣━━ 📄 emart24_260224.csv
-┃   ┣━━ 📄 cleaned_data.csv                 # 중복 제거 및 형식 통일 데이터
-┃   ┣━━ 📄 categorized_data.csv             # 카테고리(식사/간식 등) 분류 데이터
-┃   ┗━━ 📄 filtered_convenience_stores.csv  # 지도 표시용 매장 정보
-┣━━ 📂 pages/                               # 대시보드 상세 페이지 (Streamlit)
-┃   ┣━━ 📄 00_home.py                       # 메인 대시보드 & 실시간 추천
-┃   ┣━━ 📄 01_overall_summary.py            # 전체 상품 검색 및 통합 필터
-┃   ┣━━ 📄 02_brand_comparison.py           # 브랜드별 행사 규모 및 통계 비교
-┃   ┣━━ 📄 03_best_value.py                 # 할인율 TOP 50 가성비 랭킹
-┃   ┣━━ 📄 04_budget_combination.py         # 예산 기반 최적 상품 조합 추천
-┃   ┣━━ 📄 05_diet_guide.py                 # 고단백/제로 테마 상품 가이드
-┃   ┣━━ 📄 06_night_snack_guide.py          # 야식 & 안주 테마 상품 가이드
-┃   ┣━━ 📄 07_convenience_store_map.py      # 전국 편의점 위치 지도 서비스
-┃   ┣━━ 📄 08_random_picker.py              # 랜덤 추천 럭키박스
-┃   ┗━━ 📄 09_jackpot_game.py               # 재미를 위한 잭팟(슬롯머신) 게임
-┣━━ 📂 scraper/                             # 브랜드별 데이터 수집 엔진
-┃   ┣━━ 📄 cu_scraper.py                    # CU 크롤러
-┃   ┣━━ 📄 gs25_scraper.py                  # GS25 크롤러
-┃   ┣━━ 📄 seven_eleven_scraper.py          # 세븐일레븐 크롤러
-┃   ┣━━ 📄 emart24_scraper.py               # 이마트24 크롤러
-┃   ┣━━ 📄 event_news_scraper.py            # 행사 관련 소식 수집기
-┃   ┗━━ 📄 __init__.py
-┣━━ 📂 test/                                # 단위 및 통합 테스트
-┃   ┣━━ 📄 batch_scheduler_test.py
-┃   ┗━━ 📄 batch_script_test.py
-┣━━ 📂 utils/                               # 공용 유틸리티 및 데이터 처리 도구
-┃   ┣━━ 📄 data_cleaner.py                  # 메인 데이터 정제 로직
-┃   ┣━━ 📄 data_categorize.py               # 상품명 기반 카테고리 분류 엔진
-┃   ┣━━ 📄 chatbot.py                       # AI 상품 도우미 챗봇 모듈
-┃   ┣━━ 📄 brandname_visual.py              # 시각화 차트 생성 스크립트
-┃   ┣━━ 📄 graph.py                         # 분석 그래프 생성 모듈
-┃   ┣━━ 📄 cart.py                          # 장바구니/찜 기능 관련 유틸리티
-┃   ┣━━ 📄 news_scraper.py                  # 뉴스 데이터 수집 지원
-┃   ┣━━ 📄 data_cleaner_batch.py            # 배치용 데이터 정제 모듈
-┃   ┣━━ 📄 data_visualization.ipynb         # 데이터 분석용 Jupyter Notebook
-┃   ┗━━ 📄 __init__.py
-┣━━ 📄 app.py                               # 프로젝트 메인 실행 파일 (Navigation)
-┣━━ 📄 style.css                            # 대시보드 커스텀 UI 스타일
-┣━━ 📄 requirements.txt                     # 설치 필요 라이브러리 목록
-┣━━ 📄 .gitignore                           # Git 관리 제외 설정
-┗━━ 📄 README.md                            # 프로젝트 안내 문서
+python_conv_project/
+├── app.py                         # Streamlit 앱 진입점 및 페이지 네비게이션
+├── style.css                      # 공통 UI 스타일
+├── requirements.txt               # Python 의존성 목록
+├── assets/                        # 로고, 그래프 등 정적 이미지
+├── batch/                         # 정기 데이터 수집 배치
+│   ├── batch_scheduler_manager.py # APScheduler 기반 스케줄러 관리
+│   ├── Batach_README.md           # 배치 실행 가이드
+│   └── script/
+│       └── crawl_batch_script.py  # 브랜드별 수집, 정제, 분류 실행 스크립트
+├── data/                          # 원본/정제/분류 CSV 데이터
+│   ├── CU_260224.csv
+│   ├── GS25_260224.csv
+│   ├── 7Eleven_260224.csv
+│   ├── emart24_260224.csv
+│   ├── cleaned_data.csv
+│   ├── categorized_data.csv
+│   ├── filtered_convenience_stores.csv
+│   └── official_event_news.csv
+├── pages/                         # Streamlit 페이지
+│   ├── 00_home.py
+│   ├── 01_overall_summary.py
+│   ├── 02_brand_comparison.py
+│   ├── 03_best_value.py
+│   ├── 04_budget_combination.py
+│   ├── 05_diet_guide.py
+│   ├── 06_night_snack_guide.py
+│   ├── 07_convenience_store_map.py
+│   ├── 08_random_picker.py
+│   ├── 09_jackpot_game.py
+│   └── 10_event_news.py
+├── scraper/                       # 브랜드별 행사 상품 수집기
+│   ├── cu_scraper.py
+│   ├── gs25_scraper.py
+│   ├── seven_eleven_scraper.py
+│   ├── emart24_scraper.py
+│   └── event_news_scraper.py
+├── utils/                         # 데이터 정제, 분류, 챗봇, 장바구니, 시각화 유틸
+└── test/                          # 배치 및 스케줄러 테스트
 ```
 
----
+## 데이터 파이프라인
 
-## 🛠️ 주요 모듈 설명
+```text
+브랜드별 행사 페이지
+  -> scraper/ 브랜드별 수집기
+  -> data/ 브랜드별 원본 CSV
+  -> utils/data_cleaner.py 또는 data_cleaner_batch.py
+  -> data/cleaned_data.csv
+  -> utils/data_categorize.py
+  -> data/categorized_data.csv
+  -> Streamlit 대시보드, 추천 기능, 챗봇, 지도/뉴스 화면
+```
 
-### 1. **Core (app.py)**
-- 애플리케이션의 컨트롤 타워입니다.
-- Streamlit의 `st.navigation`을 통해 멀티 페이지를 구성하며, 사이드바 통계 및 공통 챗봇 기능을 로드합니다.
+핵심 설계 포인트는 수집 단계와 분석 단계를 분리한 것입니다. 브랜드마다 요청 방식, 응답 구조, 행사명 표기가 다르기 때문에 수집기는 독립적으로 관리하고, 대시보드가 사용하는 데이터는 공통 CSV로 정리합니다.
 
-### 2. **Data Collection (scraper/)**
-- 각 편의점의 서로 다른 웹 구조를 분석하여 `Selenium` 및 `BeautifulSoup`으로 데이터를 추출합니다.
-- 수집 항목: 브랜드명, 상품명, 가격, 행사 종류(1+1, 2+1 등), 이미지 URL.
+## 실행 방법
 
-### 3. **Batch System (batch/)**
-- 수동 실행 없이도 정기적으로 최신 데이터를 수집할 수 있도록 스케줄러를 포함하고 있습니다.
-- `batch_scheduler_manager.py`를 통해 `app.py` 실행 시 백그라운드에서 동작합니다.
+### 1. 가상환경 준비
 
-### 4. **Data Intelligence (utils/)**
-- **Clean & Categorize**: 수집된 로우 데이터를 정제하고, 1,000개 이상의 상품을 '식사류', '간식류' 등으로 자동 분류합니다.
-- **AI Chatbot**: 사용자의 질문을 분석하여 조건에 맞는 상품을 대화형으로 추천합니다.
-
----
-
-## 🚀 설치 및 실행 방법
-
-### 1. 환경 구축
 ```bash
-# 라이브러리 설치
+python -m venv .venv
+```
+
+Windows PowerShell:
+
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+macOS/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### 2. 의존성 설치
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. 대시보드 실행
+### 3. Streamlit 실행
+
 ```bash
 streamlit run app.py
 ```
 
-### 3. 데이터 업데이트 (선택 사항)
-배치 시스템이 자동으로 동작하지만, 수동으로 데이터를 즉시 수집하려면:
+### 4. 데이터 수동 갱신
+
+필요할 때 브랜드별 수집기와 정제 스크립트를 직접 실행할 수 있습니다.
+
 ```bash
-# 개별 크롤러 실행
 python scraper/cu_scraper.py
-# 이후 데이터 정제 실행
+python scraper/gs25_scraper.py
+python scraper/seven_eleven_scraper.py
+python scraper/emart24_scraper.py
 python utils/data_cleaner.py
 python utils/data_categorize.py
 ```
 
+배치 흐름 전체를 확인하려면 아래 파일을 참고하세요.
+
+```bash
+python batch/script/crawl_batch_script.py
+```
+
+## Git 협업 정보
+
+현재 저장소는 GitHub 원격 저장소와 연결되어 있습니다.
+
+```text
+origin: https://github.com/hongjiho5148/python_conv_project.git
+branch: main
+```
+
+기본 협업 흐름은 다음과 같이 가져갈 수 있습니다.
+
+```bash
+git pull origin main
+git checkout -b feature/작업-이름
+git add .
+git commit -m "feat: 작업 내용 요약"
+git push origin feature/작업-이름
+```
+
+README의 팀원 GitHub 링크는 계정 페이지로 연결해 두었습니다. GitHub의 Contributors 영역에 정확히 연결되게 하려면 각 팀원이 본인 GitHub 계정 이메일 또는 noreply 이메일로 커밋하도록 설정해야 합니다.
+
+## 트러블슈팅 및 개선점
+
+### 1. 브랜드별 데이터 구조 차이
+
+브랜드마다 행사 상품 페이지의 요청 방식과 응답 형식이 달라 하나의 크롤러로 통합하기 어렵습니다.
+
+해결 방식:
+
+- 브랜드별 수집기를 분리했습니다.
+- 수집 결과는 공통 컬럼으로 맞췄습니다.
+- 이후 대시보드와 추천 기능은 `categorized_data.csv`만 바라보도록 구성했습니다.
+
+### 2. Streamlit 재실행과 배치 중복 등록
+
+Streamlit은 사용자 상호작용마다 스크립트를 다시 실행할 수 있어 스케줄러 작업이 중복 등록될 가능성이 있습니다.
+
+해결 방식:
+
+- `batch_scheduler_manager.py`에서 스케줄러 관리 책임을 분리했습니다.
+- job id를 기준으로 중복 등록을 방지하는 구조를 사용했습니다.
+- 배치 로그와 실행 스크립트 로그를 분리해 문제 지점을 추적할 수 있게 했습니다.
+
+### 3. 데이터 정제 품질
+
+크롤링 데이터에는 가격 표기 차이, 결측값, 중복 상품, 행사명 표기 차이가 포함될 수 있습니다.
+
+해결 방식:
+
+- 가격 문자열에서 숫자만 추출해 정수형으로 변환합니다.
+- 필수 컬럼이 비어 있는 데이터는 제거합니다.
+- 중복 상품을 제거하고 행사 유형을 표준화합니다.
+- 상품명 기반 카테고리 분류를 추가해 추천/필터 기능에서 활용합니다.
+
+### 4. 앞으로 보완하면 좋은 점
+
+- 팀원별 실제 담당 영역과 프로젝트 기간 추가
+- 주요 화면 스크린샷 추가
+- `.env.example` 파일 제공
+- 데이터 정제 로직 단위 테스트 확대
+- 배치 실행 결과 리포트 자동 생성
+- 브랜드별 크롤링 실패 시 알림 기능 추가
+- GitHub Actions를 활용한 테스트 자동화
+
 ---
-© 2026 Convenience Store Event Dashboard Project.
+
+2026 Convenience Store Event Dashboard Project.
