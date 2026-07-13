@@ -18,19 +18,14 @@ CU, GS25, 7-Eleven, emart24의 행사 상품 데이터를 수집하고 정제해
 
 ## 팀 소개
 
-편의점 행사 데이터를 수집, 정제, 분석, 시각화하는 전 과정을 구현한 팀 프로젝트입니다.  
-아래 GitHub 계정은 현재 저장소의 커밋 기록에서 확인되는 기여자 기준으로 정리했습니다.
+편의점 행사 상품 데이터의 수집, 정제, 분석, 시각화, 추천 기능을 함께 구현한 6인 팀 프로젝트입니다.
 
-| GitHub | 주요 기여 영역 |
-| --- | --- |
-| [hongjiho5148](https://github.com/hongjiho5148) | 프로젝트 저장소 관리, Streamlit 화면 구성, 기능 통합 |
-| [Hyeonseok93](https://github.com/Hyeonseok93) | 주요 기능 개발, 데이터 처리 및 화면 개선 |
-| [Engineer-kim](https://github.com/Engineer-kim) | 기능 개발, 테스트 및 데이터 흐름 개선 |
-| [owhat02](https://github.com/owhat02) | 예산 조합 추천, 비교 기능 개선 |
-| [seoyeon020](https://github.com/seoyeon020) | 기능 보완 및 UI/데이터 처리 기여 |
-| [siyeon04](https://github.com/siyeon04) | 기능 보완 및 프로젝트 개선 기여 |
-
-역할명이나 팀원별 담당 페이지가 더 명확해지면 이 표를 `팀장`, `데이터 수집`, `대시보드`, `추천 기능`, `지도/뉴스`, `QA`처럼 세분화할 수 있습니다.
+| 김한진(팀장) | 이시연 | 임서연 | 김현석A | 이세영 | 홍지호 |
+| --- | --- | --- | --- | --- | --- |
+| `Engineer-kim` | `siyeon04` | `seoyeon020` | `Hyeonseok93` | `owhat02` | `hongjiho5148` |
+| ![Leader](https://img.shields.io/badge/Leader-FFD43B) ![Data](https://img.shields.io/badge/Data_Crawling-2F9E44) | ![Data](https://img.shields.io/badge/Data_Cleaning-2F9E44) ![Planning](https://img.shields.io/badge/Planning-1971C2) | ![Data](https://img.shields.io/badge/Data_Analysis-2F9E44) ![Dashboard](https://img.shields.io/badge/Dashboard-1971C2) | ![Crawling](https://img.shields.io/badge/Crawling-2F9E44) ![Frontend](https://img.shields.io/badge/UI-1971C2) | ![Crawling](https://img.shields.io/badge/Crawling-2F9E44) ![UX](https://img.shields.io/badge/UX_Planning-1971C2) | ![Crawling](https://img.shields.io/badge/Crawling-2F9E44) ![Dashboard](https://img.shields.io/badge/Dashboard-1971C2) |
+| 7-Eleven 행사 상품 크롤링, 대시보드 기획, 메인 페이지 테스트, 챗봇 로직 수정 | 수집 데이터 정제/분석, 목적 기반 상품 분류 기획, 장바구니 기능, 발표 준비 | 데이터 분석/정제, 시각화 대시보드 기능 기획, 시간대별 상품 추천, 기능 테스트 | emart24 행사 정보 크롤링 도구, 카테고리 그래프 UI, 야식/럭키박스/매장 찾기 기능 | GS25 행사 상품 크롤링, 검색 기반 추천 UX, 행사 뉴스 크롤링, 기능 테스트 | CU 행사 상품 크롤링 및 CSV 저장, 웹 대시보드 구현, 예산 추천/브랜드 비교/잭팟 게임 |
+| github:<br>[Engineer-kim](https://github.com/Engineer-kim) | github:<br>[siyeon04](https://github.com/siyeon04) | github:<br>[seoyeon020](https://github.com/seoyeon020) | github:<br>[Hyeonseok93](https://github.com/Hyeonseok93) | github:<br>[owhat02](https://github.com/owhat02) | github:<br>[hongjiho5148](https://github.com/hongjiho5148) |
 
 ## 서비스 개요
 
